@@ -16,7 +16,8 @@ library(formattable)
 # options(rdfp.application_name = "MyAppDFP")
 # options(rdfp.client_id = "430054733100-o7vbb1eujetulrh6nk1gipfpmu8v6dpo.apps.googleusercontent.com")
 # options(rdfp.client_secret = "fyqqSUzmlCFcpA-pZxlT0wOB")
-# 
+
+ 
 # # 
 # # ######################################################################
 # # how to create oauth token for DFP and GDrive
