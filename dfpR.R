@@ -6,7 +6,6 @@
 #***** ADX DFP migration https://developers.google.com/doubleclick-publishers/docs/adx_reporting_migration
 # ############## dashboard: https://datastudio.google.com/reporting/0B8_ub-Gf21e-cG1uQV9GQnFzdzQ/page/M7xI
 
-
 #devtools::install_github("ReportMort/rdfp")
 
 library(rdfp)
