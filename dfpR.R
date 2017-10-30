@@ -3,26 +3,23 @@
 ###https://cran.r-project.org/web/packages/googlesheets/vignettes/basic-usage.html#register-a-sheet
 
 #======## TO READ oAuth https://support.rstudio.com/hc/en-us/articles/217952868-Generating-OAuth-tokens-from-a-server
-
 #***** ADX DFP migration https://developers.google.com/doubleclick-publishers/docs/adx_reporting_migration
-
-
 # ############## dashboard: https://datastudio.google.com/reporting/0B8_ub-Gf21e-cG1uQV9GQnFzdzQ/page/M7xI
 
 
 #devtools::install_github("ReportMort/rdfp")
 
-library("rdfp")
+library(rdfp)
 library(magrittr)
 library(formattable)
-#options(stringsAsFactors = FALSE)
-#options(rdfp.network_code = "4507451")
-#options(rdfp.application_name = "MyAppDFP")
-#options(rdfp.client_id = "430054733100-o7vbb1eujetulrh6nk1gipfpmu8v6dpo.apps.googleusercontent.com")
-#options(rdfp.client_secret = "fyqqSUzmlCFcpA-pZxlT0wOB")
-
+# options(stringsAsFactors = FALSE)
+# options(rdfp.network_code = "4507451")
+# options(rdfp.application_name = "MyAppDFP")
+# options(rdfp.client_id = "430054733100-o7vbb1eujetulrh6nk1gipfpmu8v6dpo.apps.googleusercontent.com")
+# options(rdfp.client_secret = "fyqqSUzmlCFcpA-pZxlT0wOB")
 # 
-# ######################################################################
+# # 
+# # ######################################################################
 # # how to create oauth token for DFP and GDrive
 # 
 # file.remove('.httr-oauth') # Remove current token
