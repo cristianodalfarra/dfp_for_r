@@ -95,22 +95,6 @@ lastweek_month = format(as.Date(today-8,format="%Y-%m-%d"), "%m")
 sett_scorsa= paste("2017",lastweek_month,lastweek_day,sep="")
 lastweek_check = today-8
 
-# creazioen df con le date ottenute dai report DFP
-dfp_yesterday = report_data_yesterday[which.max(report_data_yesterday$Dimension.DATE), ][2]
-dfp_lastweek = report_data_lastweek[which.max(report_data_lastweek$Dimension.DATE), ][2]
-date_from_dfp = NULL
-date_from_dfp = data.frame(dfp_yesterday,dfp_lastweek,ieri_check,lastweek_check)
-
-date_1=as.Date(paste(date_from_dfp$Dimension.DATE), "%Y-%m-%d")
-date_2=as.Date(paste(date_from_dfp$Dimension.DATE.1), "%Y-%m-%d") 
-
-if (date_1==date_from_dfp[3] && date_2==date_from_dfp[4] ) {
-  check_date="report aggiornato"
-} else {
-  check_date="report da aggiornare"
-}
-
-date_from_dfp = data.frame(date_from_dfp,check_date)
 
 
 
@@ -160,6 +144,27 @@ request_data_last_2_weeks <- list(reportJob=list(reportQuery=list(dimensions='AD
 
 report_data_last_2_weeks <- dfp_full_report_wrapper(request_data_last_2_weeks)
 report_data_last_2_weeks[10]= report_data_last_2_weeks[10]/10^6
+
+
+# creazioen df con le date ottenute dai report DFP
+dfp_yesterday = report_data_yesterday[which.max(report_data_yesterday$Dimension.DATE), ][2]
+dfp_lastweek = report_data_lastweek[which.max(report_data_lastweek$Dimension.DATE), ][2]
+date_from_dfp = NULL
+date_from_dfp = data.frame(dfp_yesterday,dfp_lastweek,ieri_check,lastweek_check)
+
+date_1=as.Date(paste(date_from_dfp$Dimension.DATE), "%Y-%m-%d")
+date_2=as.Date(paste(date_from_dfp$Dimension.DATE.1), "%Y-%m-%d") 
+
+if (date_1==date_from_dfp[3] && date_2==date_from_dfp[4] ) {
+  check_date="report aggiornato"
+} else {
+  check_date="report da aggiornare"
+}
+
+date_from_dfp = data.frame(date_from_dfp,check_date)
+
+
+
 
 
 #merge ieri e settimana scora
