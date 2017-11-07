@@ -179,7 +179,7 @@ report_data_lastweek[10]= report_data_lastweek[10]/10^6
 #last_2_weeks
 last_2_weeks_day = format(as.Date(today-15,format="%Y-%m-%d"), "%d")
 last_2_weeks_month = format(as.Date(today-15,format="%Y-%m-%d"), "%m")
-
+last2week_check = today-15
 
 request_data_last_2_weeks <- list(reportJob=list(reportQuery=list(dimensions='AD_EXCHANGE_TAG_NAME',
                                                                   dimensions='DATE',
@@ -201,11 +201,30 @@ report_data_last_2_weeks <- dfp_full_report_wrapper(request_data_last_2_weeks)
 report_data_last_2_weeks[10]= report_data_last_2_weeks[10]/10^6
 
 
-# creazioen df con le date ottenute dai report DFP
+# creazione df con le date ottenute dai report DFP
 dfp_yesterday = report_data_yesterday[which.max(report_data_yesterday$Dimension.DATE), ][2]
 dfp_lastweek = report_data_lastweek[which.max(report_data_lastweek$Dimension.DATE), ][2]
 date_from_dfp = NULL
 date_from_dfp = data.frame(dfp_yesterday,dfp_lastweek,ieri_check,lastweek_check)
+
+date_1=as.Date(paste(date_from_dfp$Dimension.DATE), "%Y-%m-%d")
+date_2=as.Date(paste(date_from_dfp$Dimension.DATE.1), "%Y-%m-%d") 
+
+check_date=""
+if (date_1==date_from_dfp[3] && date_2==date_from_dfp[4] ) {
+  check_date="report aggiornato"
+} else {
+  check_date="report da aggiornare"
+}
+
+date_from_dfp = data.frame(date_from_dfp,check_date)
+
+
+# creazioen df con le date ottenute dai report DFP - 2weeks
+dfp_yesterday = report_data_yesterday[which.max(report_data_yesterday$Dimension.DATE), ][2]
+dfp_last2week = report_data_last_2_weeks[which.max(report_data_last_2_weeks$Dimension.DATE), ][2]
+date_from_dfp_2weeks = NULL
+date_from_dfp_2weeks = data.frame(dfp_yesterday,dfp_last2week,ieri_check,last2week_check)
 
 date_1=as.Date(paste(date_from_dfp$Dimension.DATE), "%Y-%m-%d")
 date_2=as.Date(paste(date_from_dfp$Dimension.DATE.1), "%Y-%m-%d") 
@@ -216,8 +235,7 @@ if (date_1==date_from_dfp[3] && date_2==date_from_dfp[4] ) {
   check_date="report da aggiornare"
 }
 
-date_from_dfp = data.frame(date_from_dfp,check_date)
-
+date_from_dfp_2weeks = data.frame(date_from_dfp_2weeks,check_date)
 
 
 
@@ -226,7 +244,7 @@ date_from_dfp = data.frame(date_from_dfp,check_date)
 a= merge(report_data_yesterday,report_data_lastweek, by="Dimension.AD_EXCHANGE_TAG_NAME")
 
 
-# colonna variazione
+# colonna variazione seet scorsa
 a[20]=a[10]/a[19]-1
 
 # valori sopra e sotto 15%
@@ -244,10 +262,10 @@ b= merge(report_data_yesterday,report_data_last_2_weeks, by="Dimension.AD_EXCHAN
 b[20]=b[10]/b[19]-1
 
 # valori sopra e sotto 15%
-valori_15=subset(a, (b[20] >0.15 | b[20] < -0.15))
+valori_15=subset(b, (b[20] >0.15 | b[20] < -0.15))
 valori_15[20]= format(round(valori_15[20], 2), nsmall = 2)
 casi = valori_15[,c(1,20)]
-casi_all = b[,c(1,20)]
+casi_all_2weeks = b[,c(1,20)]
 
 
 #calcolo revenue 
@@ -269,7 +287,7 @@ variazione_2_sett = percent(s_variazione_2_sett)
 
 #creazione df per export in google spreadsheet
 somme.data <- data.frame(somma_scorsa_sett, somma_ieri, variazione)
-somme.data_2_sett <- data.frame(somma_scorsa_2_sett, somma_ieri, variazione_2_sett)
+somme.data_2weeks <- data.frame(somma_scorsa_2_sett, somma_ieri, variazione_2_sett)
 
 #scrittura gsheet
 library(googlesheets)
@@ -289,14 +307,25 @@ gap <- gs_title("ADsense daily")
 
 # aggiunta celle nel tab 'dfp_casi'
 gap <- gap %>%
+  
   gs_edit_cells(ws = "dfp_casi", input = casi_all, trim = TRUE)
+gap <- gap %>%
+  gs_edit_cells(ws = "dfp_casi_2weeks", input = casi_all_2weeks, trim = TRUE)
 
 # aggiunta celle nel tab 'dfp_somme'
 gap <- gap %>%
   gs_edit_cells(ws = "dfp_somme", input = somme.data, trim = TRUE)
 
 gap <- gap %>%
+  gs_edit_cells(ws = "dfp_somme_2weeks", input = somme.data_2weeks, trim = TRUE)
+
+
+gap <- gap %>%
   gs_edit_cells(ws = "date_dfp", input = date_from_dfp, trim = TRUE)
+
+gap <- gap %>%
+  gs_edit_cells(ws = "date_dfp_2weeks", input = date_from_dfp_2weeks, trim = TRUE)
+
 
 
 # 
