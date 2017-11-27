@@ -55,26 +55,26 @@ reportquery_dfp_unit <- function(year,m_start,m_end,day_start,day_end,device_typ
   #head(report_dat)
   
   if (toString(only_total)=="yes")
-  {   a=tail(report_dat,1)
+  {   
+    a=tail(report_dat,1)
+    a[1]=paste(dfp_unit,device_type_data,toString(m_start),".",toString(year))
+    a[2]="Total"  
   
-  
-  
-  a[1]=paste(dfp_unit,device_type_data,toString(m_start),".",toString(year))
-  a[2]="Total"  
-  newdf <<- rbind(a)
   }
   else
   {   a=report_dat  }
   
   if (toString(only_total)=="yes")
-  {   device_type_file = paste(device_type_file, "totale")
+  {   device_type_file = paste(device_type_file, "totale",dfp_unit)
   }
   
   #library(xlsx)
   filename=paste(dfp_unit,device_type_file,toString(m_start),".",toString(year)) 
   write.csv(a, paste("C:/Users/Utente/Documents/R projects/RDFP/results/",filename,".csv"))
-  
-  
+  assign("X", a, .GlobalEnv)
+  assign("A", a, .GlobalEnv)
+  b=rbind.data.frame(A,TOT)
+  assign("TOT", b, .GlobalEnv)
   return(a)
 }
 

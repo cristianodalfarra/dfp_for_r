@@ -1,9 +1,15 @@
 reportquery_dfp_tag <- function(year,m_start,m_end,day_start,day_end,device_type,dfp_tag,only_total){
   
   if (toString(device_type)=="d")
-  {   device_type = "(30000,30002)"  }
+  {   device_type = "(30000,30002)"
+  device_type_data = "desktop-tablet"
+  device_type_file = "desktop-tablet"
+  }
   else
-  {   device_type = "(30001)"  }  
+  {   device_type = "(30001)" 
+  device_type_data = "mobile"
+  device_type_file = "mobile"
+  }  
   request_data <- list(reportJob=list(reportQuery=list(dimensions='AD_EXCHANGE_TAG_NAME',
                                                        adUnitView='FLAT',
                                                        columns='AD_EXCHANGE_REQUESTS',
@@ -33,7 +39,8 @@ reportquery_dfp_tag <- function(year,m_start,m_end,day_start,day_end,device_type
   counter <- 0
   while(dfp_getReportJobStatus_result!='COMPLETED' & counter < 100){
     dfp_getReportJobStatus_result <- dfp_getReportJobStatus(request_data)
-    Sys.sleep(3)
+    print(counter*5)
+    Sys.sleep(5)
     counter <- counter + 1
   }
   
@@ -55,19 +62,40 @@ reportquery_dfp_tag <- function(year,m_start,m_end,day_start,day_end,device_type
   {   device_type = "mobile"  }  
   
   
-  a[1]=paste(dfp_tag,device_type,toString(m_start),".",toString(year))
-  a[2]="Total"  
+  
+  if (toString(only_total)=="yes")
+  {   
+    a=tail(report_dat,1)
+    a[1]=paste(dfp_tag,device_type_data,toString(m_start),".",toString(year))
+    #a[2]="Total"  
+  }  
   }
   else
   {   a=report_dat  }
+  
   
   a=subset(report_dat,  Tags==dfp_tag)
   
   
   #library(xlsx)
+  library(tibble)
   filename=paste(dfp_tag,device_type,toString(m_start),".",toString(year)) 
   write.csv(a, paste("C:/Users/Utente/Documents/R projects/RDFP/results/",filename,".csv"))
+  assign("X", a, .GlobalEnv)
+  assign("A", a, .GlobalEnv)
+  if("Ad.unit.ID" %in% colnames(A)==FALSE) 
+    {
+    print("test")
+    A=add_column(A, "Ad.unit.ID" = "", .after = 1)
+    
+    }
   
+  colnames(A)[1] <- "Ad.unit"
+  A[2]="Total"
+  A[1]=paste(dfp_tag,device_type_data,toString(m_start),".",toString(year))
+  print(A)
+  b=rbind.data.frame(A,TOT)
+  assign("TOT", b, .GlobalEnv)
   
   return(a)
 }

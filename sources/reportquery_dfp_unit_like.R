@@ -13,7 +13,6 @@ reportquery_dfp_unit_like <- function(year,m_start,m_end,day_start,day_end,devic
   
   #  where ((ad_exchange_gfp_inventory_unit_name in ('4507451 » LEAD_HP', '4507451 » SUPERLEAD_HP', '4507451 » SUPERLEAD_HP_middle', '4507451 » SQR_HP') and ad_exchange_platform_type_name in ('Desktop', 'Tablets')) and not (ad_exchange_dfp_ad_unit_top_level like 'TXTLINK_HP'))
   request_data <- list(reportJob=list(reportQuery=list(dimensions='AD_UNIT_NAME',
-                                                        dimensions='DEVICE_CATEGORY_ID',
                                                        adUnitView='FLAT',
                                                        columns='AD_EXCHANGE_REQUESTS',
                                                        columns="AD_EXCHANGE_MATCHED_QUERIES",
@@ -62,7 +61,7 @@ reportquery_dfp_unit_like <- function(year,m_start,m_end,day_start,day_end,devic
   
   
   
-  a[1]=paste(dfp_unit,device_type_data,toString(m_start),".",toString(year))
+  a[1]=paste(gsub('%', '', dfp_unit),device_type_data,toString(m_start),".",toString(year))
   a[2]="Total"  
   }
   else
@@ -75,7 +74,10 @@ reportquery_dfp_unit_like <- function(year,m_start,m_end,day_start,day_end,devic
   #library(xlsx)
   filename=paste(dfp_unit,device_type_file,toString(m_start),".",toString(year)) 
   write.csv(a, paste("C:/Users/Utente/Documents/R projects/RDFP/results/",filename,".csv"))
-  
+  assign("X", a, .GlobalEnv)
+  assign("A", a, .GlobalEnv)
+  b=rbind.data.frame(A,TOT)
+  assign("TOT", b, .GlobalEnv)
   
   return(a)
 }
