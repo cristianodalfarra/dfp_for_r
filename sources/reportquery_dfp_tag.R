@@ -39,8 +39,18 @@ reportquery_dfp_tag <- function(year,m_start,m_end,day_start,day_end,device_type
   counter <- 0
   while(dfp_getReportJobStatus_result!='COMPLETED' & counter < 100){
     dfp_getReportJobStatus_result <- dfp_getReportJobStatus(request_data)
-    print(counter*5)
-    Sys.sleep(5)
+    if (counter>10)
+    {
+      print(counter*15)
+      Sys.sleep(15) 
+      filename=paste("warning",dfp_tag,device_type,toString(m_start),".",toString(year)) 
+      write.csv(a, paste("C:/Users/Utente/Documents/R projects/RDFP/warnings/",filename,".txt"))
+      
+    }
+    else
+    {print(counter*5)
+      Sys.sleep(5)}
+    
     counter <- counter + 1
   }
   
@@ -66,7 +76,7 @@ reportquery_dfp_tag <- function(year,m_start,m_end,day_start,day_end,device_type
   if (toString(only_total)=="yes")
   {   
     a=tail(report_dat,1)
-    a[1]=paste(dfp_tag,device_type_data,toString(m_start),".",toString(year))
+    a[1]=paste(dfp_tag,device_type_data,toString(day_start),".",toString(day_end),toString(m_start),".",toString(year))
     #a[2]="Total"  
   }  
   }
@@ -79,7 +89,8 @@ reportquery_dfp_tag <- function(year,m_start,m_end,day_start,day_end,device_type
   
   #library(xlsx)
   library(tibble)
-  filename=paste(dfp_tag,device_type,toString(m_start),".",toString(year)) 
+  filename=paste(dfp_tag,device_type_file,toString(m_start),".",toString(year)) 
+  a[1]=paste(dfp_tag,device_type_data,toString(day_start),"-",toString(day_end),toString(m_start),"/",toString(year))
   write.csv(a, paste("C:/Users/Utente/Documents/R projects/RDFP/results/",filename,".csv"))
   assign("X", a, .GlobalEnv)
   assign("A", a, .GlobalEnv)
@@ -92,7 +103,7 @@ reportquery_dfp_tag <- function(year,m_start,m_end,day_start,day_end,device_type
   
   colnames(A)[1] <- "Ad.unit"
   A[2]="Total"
-  A[1]=paste(dfp_tag,device_type_data,toString(m_start),".",toString(year))
+  #A[1]=paste(dfp_tag,device_type_data,toString(m_start),".",toString(year))
   print(A)
   b=rbind.data.frame(A,TOT)
   assign("TOT", b, .GlobalEnv)
