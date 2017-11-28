@@ -36,6 +36,11 @@ reportquery_dfp_unit(year=2017,m_start=m1,m_end=m2,day_start=d1,day_end=d2,devic
 reportquery_dfp_unit(year=2017,m_start=m1,m_end=m2,day_start=d1,day_end=d2,device_type="m",dfp_unit="SUPERLEAD_HP",only_total="yes")
 reportquery_dfp_unit(year=2017,m_start=m1,m_end=m2,day_start=d1,day_end=d2,device_type="m",dfp_unit="SUPERLEAD_HP_middle",only_total="yes")
 
+TOT$Estimated.revenue=gsub("\\€", "", TOT$Estimated.revenue)
+TOT$Ad.request.eCPM=gsub("\\€", "", TOT$Ad.request.eCPM)
+TOT$CPC=gsub("\\€", "", TOT$CPC)
+
+
 write.xlsx(TOT, paste("C:/Users/Utente/Documents/R projects/RDFP/report/","HP_ALL.xlsx"))
 
 
@@ -87,9 +92,12 @@ reportquery_dfp_unit_like_right(year=2016,m_start=m1,m_end=m2,day_start=d1,day_e
 #Report ADX - LISTING - desktop tablet - LEAD_CAT 2017
 reportquery_dfp_unit_like_right(year=2017,m_start=m1,m_end=m2,day_start=d1,day_end=d2,device_type="d",dfp_unit="LEAD_CAT",dfp_unit_not="SUPERLEAD",only_total="yes")
 
-write.xlsx(TOT, paste("C:/Users/Utente/Documents/R projects/RDFP/report/","LISTING_ALL.xlsx"))
+TOT$Estimated.revenue=gsub("\\€", "", TOT$Estimated.revenue)
+TOT$Ad.request.eCPM=gsub("\\€", "", TOT$Ad.request.eCPM)
+TOT$CPC=gsub("\\€", "", TOT$CPC)
 
-write.xlsx(TOT, paste("C:/Users/Utente/Documents/R projects/RDFP/report/","LISTING_parte.xlsx"))
+
+write.xlsx(TOT, paste("C:/Users/Utente/Documents/R projects/RDFP/report/","LISTING_ALL.xlsx"))
 
 
 
@@ -163,4 +171,30 @@ reportquery_dfp_unit_like(year=2016,m_start=m1,m_end=m2,day_start=d1,day_end=d2,
 reportquery_dfp_unit_like(year=2017,m_start=m1,m_end=m2,day_start=d1,day_end=d2,device_type="m",dfp_unit="%WBOX%",only_total="yes")# 
 
 
+TOT$Estimated.revenue=gsub("\\€", "", TOT$Estimated.revenue)
+TOT$Ad.request.eCPM=gsub("\\€", "", TOT$Ad.request.eCPM)
+TOT$CPC=gsub("\\€", "", TOT$CPC)
+
+
 write.xlsx(TOT, paste("C:/Users/Utente/Documents/R projects/RDFP/report/","DETTAGLIO_ALL.xlsx"))
+
+#scrittura gsheet
+library(googlesheets)
+
+# token <- gs_auth(cache = TRUE)
+# gd_token()
+# saveRDS(token, file = "googlesheets_token.rds")
+
+#gs_auth(token = "googlesheets_token.rds")
+suppressMessages(gs_auth(token = "googlesheets_token.rds", verbose = FALSE))
+
+
+gap = gs_ls("report adx links dfp")
+
+#registrazione file
+gap <- gs_title("report adx links dfp")
+
+# aggiunta celle nel tab 'dfp_casi'
+gap <- gap %>%
+  gs_edit_cells(ws = "test", input = TOT, trim = TRUE)
+
