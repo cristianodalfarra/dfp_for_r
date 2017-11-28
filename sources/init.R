@@ -17,7 +17,7 @@
 library(rdfp)
 library(magrittr)
 library(formattable)
-library(httr)
+#library(httr)
 library(xlsx)
 # options(stringsAsFactors = FALSE)
 # options(rdfp.network_code = "4507451")

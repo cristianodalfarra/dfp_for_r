@@ -41,15 +41,17 @@ reportquery_dfp_tag <- function(year,m_start,m_end,day_start,day_end,device_type
     dfp_getReportJobStatus_result <- dfp_getReportJobStatus(request_data)
     if (counter>10)
     {
-      print(counter*15)
+      print("...long run")
       Sys.sleep(15) 
       filename=paste("warning",dfp_tag,device_type,toString(m_start),".",toString(year)) 
-      write.csv(a, paste("C:/Users/Utente/Documents/R projects/RDFP/warnings/",filename,".txt"))
+      write.table(dfp_tag, paste("C:/Users/Utente/Documents/R projects/RDFP/warnings/",filename,".txt"))
       
     }
     else
-    {print(counter*5)
-      Sys.sleep(5)}
+    {
+      print(counter*5)
+      Sys.sleep(5)
+    }
     
     counter <- counter + 1
   }

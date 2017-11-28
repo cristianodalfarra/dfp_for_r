@@ -39,9 +39,21 @@ reportquery_dfp_unit_like_right <- function(year,m_start,m_end,day_start,day_end
   # a simple while loop can keep checking a long running request until ready
   counter <- 0
   while(dfp_getReportJobStatus_result!='COMPLETED' & counter < 100){
-    print(counter*5)
     dfp_getReportJobStatus_result <- dfp_getReportJobStatus(request_data)
-    Sys.sleep(5)
+    if (counter>10)
+    {
+      print("...long run")
+      Sys.sleep(15) 
+      filename=paste("warning",dfp_unit,device_type,toString(m_start),".",toString(year)) 
+      write.table(dfp_unit, paste("C:/Users/Utente/Documents/R projects/RDFP/warnings/",filename,".txt"))
+      
+    }
+    else
+    {
+      print(counter*5)
+      Sys.sleep(5)
+    }
+    
     counter <- counter + 1
   }
   
