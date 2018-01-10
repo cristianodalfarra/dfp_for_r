@@ -116,7 +116,7 @@ today <- Sys.Date()
 
 yesterday_day = format(as.Date(today-1,format="%Y-%m-%d"), "%d")
 yesterday_month = format(as.Date(today-1,format="%Y-%m-%d"), "%m")
-yesterday_year = format(as.Date(today-1,format="%Y-%m-%d"), "%y")
+yesterday_year = format(as.Date(today-1,format="%YYYY-%m-%d"), "%y")
 
 
 
@@ -136,8 +136,8 @@ request_data <- list(reportJob=list(reportQuery=list(dimensions='AD_EXCHANGE_TAG
                                                      columns="AD_EXCHANGE_CPC_REVENUE",
                                                      columns="AD_EXCHANGE_REQUEST_ECPM",
                                                      columns="AD_EXCHANGE_ESTIMATED_REVENUE",
-                                                     startDate=list(year=2017, month=yesterday_month, day=yesterday_day),
-                                                     endDate=list(year=2017, month=yesterday_month, day=yesterday_day),
+                                                     startDate=list(year=2018, month=yesterday_month, day=yesterday_day),
+                                                     endDate=list(year=2018, month=yesterday_month, day=yesterday_day),
                                                      dateRangeType='CUSTOM_DATE')))
 
 report_data_yesterday <- dfp_full_report_wrapper(request_data)
@@ -169,8 +169,8 @@ request_data <- list(reportJob=list(reportQuery=list(dimensions='AD_EXCHANGE_TAG
                                                      columns="AD_EXCHANGE_CPC_REVENUE",
                                                      columns="AD_EXCHANGE_REQUEST_ECPM",
                                                      columns="AD_EXCHANGE_ESTIMATED_REVENUE",
-                                                     startDate=list(year=2017, month=lastweek_month, day=lastweek_day),
-                                                     endDate=list(year=2017, month=lastweek_month, day=lastweek_day),
+                                                     startDate=list(year=2018, month=lastweek_month, day=lastweek_day),
+                                                     endDate=list(year=2018, month=lastweek_month, day=lastweek_day),
                                                      dateRangeType='CUSTOM_DATE')))
 
 report_data_lastweek <- dfp_full_report_wrapper(request_data)
@@ -194,7 +194,7 @@ request_data_last_2_weeks <- list(reportJob=list(reportQuery=list(dimensions='AD
                                                      columns="AD_EXCHANGE_REQUEST_ECPM",
                                                      columns="AD_EXCHANGE_ESTIMATED_REVENUE",
                                                      startDate=list(year=2017, month=last_2_weeks_month, day=last_2_weeks_day),
-                                                     endDate=list(year=2017, month=last_2_weeks_month, day=last_2_weeks_day),
+                                                     endDate=list(year=2018, month=last_2_weeks_month, day=last_2_weeks_day),
                                                      dateRangeType='CUSTOM_DATE')))
 
 report_data_last_2_weeks <- dfp_full_report_wrapper(request_data_last_2_weeks)
@@ -289,6 +289,14 @@ variazione_2_sett = percent(s_variazione_2_sett)
 somme.data <- data.frame(somma_scorsa_sett, somma_ieri, variazione)
 somme.data_2weeks <- data.frame(somma_scorsa_2_sett, somma_ieri, variazione_2_sett)
 
+####################################################
+
+#impressions yesterday vs last week
+imp_yesterday=sum(report_data_yesterday[4])
+imp_lastweek=sum(report_data_lastweek[4])
+imp=c(imp_yesterday,imp_lastweek)
+
+##########################################################################
 #scrittura gsheet
 library(googlesheets)
 
@@ -307,8 +315,8 @@ gap <- gs_title("ADsense daily")
 
 # aggiunta celle nel tab 'dfp_casi'
 gap <- gap %>%
-  
   gs_edit_cells(ws = "dfp_casi", input = casi_all, trim = TRUE)
+
 gap <- gap %>%
   gs_edit_cells(ws = "dfp_casi_2weeks", input = casi_all_2weeks, trim = TRUE)
 
@@ -325,6 +333,9 @@ gap <- gap %>%
 
 gap <- gap %>%
   gs_edit_cells(ws = "date_dfp_2weeks", input = date_from_dfp_2weeks, trim = TRUE)
+
+gap <- gap %>%
+  gs_edit_cells(ws = "impressions", input = imp, trim = TRUE)
 
 
 
