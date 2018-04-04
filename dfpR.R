@@ -5,6 +5,7 @@
 #======## TO READ oAuth https://support.rstudio.com/hc/en-us/articles/217952868-Generating-OAuth-tokens-from-a-server
 #***** ADX DFP migration https://developers.google.com/doubleclick-publishers/docs/adx_reporting_migration
 # ############## dashboard: https://datastudio.google.com/reporting/0B8_ub-Gf21e-cG1uQV9GQnFzdzQ/page/M7xI
+########## API reference/v201802 https://developers.google.com/doubleclick-publishers/docs/reference/v201802/ReportService.ReportQuery
 
 #devtools::install_github("ReportMort/rdfp")
 
@@ -112,11 +113,15 @@ dfp_auth(token = "DFP_token.rds")
 
 
 
+####yesterday##########
+
 today <- Sys.Date()
 
 yesterday_day = format(as.Date(today-1,format="%Y-%m-%d"), "%d")
 yesterday_month = format(as.Date(today-1,format="%Y-%m-%d"), "%m")
 yesterday_year = format(as.Date(today-1,format="%YYYY-%m-%d"), "%y")
+yesterday_year_req = as.numeric(paste("20",format(as.Date(today-1,format="%YYYY-%m-%d"), "%y"),sep=''))
+
 
 
 
@@ -125,27 +130,45 @@ ieri_check=today-1
 
 
 
+# request_data <- list(reportJob=list(reportQuery=list(dimensions='AD_EXCHANGE_TAG_NAME',
+#                                                      dimensions='DATE',
+#                                                      adUnitView='TOP LEVEL',
+#                                                      columns='AD_EXCHANGE_REQUESTS',
+#                                                      columns="AD_EXCHANGE_MATCHED_QUERIES",
+#                                                      columns="AD_EXCHANGE_COVERAGE",
+#                                                      columns="AD_EXCHANGE_CLICKS",
+#                                                      columns="AD_EXCHANGE_MATCHED_QUERIES_CTR",
+#                                                      columns="AD_EXCHANGE_CPC_REVENUE",
+#                                                      columns="AD_EXCHANGE_REQUEST_ECPM",
+#                                                      columns="AD_EXCHANGE_ESTIMATED_REVENUE",
+#                                                      startDate=list(year=yesterday_year_req, month=yesterday_month, day=yesterday_day),
+#                                                      endDate=list(year=yesterday_year_req, month=yesterday_month, day=yesterday_day),
+#                                                      dateRangeType='CUSTOM_DATE')))
+
+
 request_data <- list(reportJob=list(reportQuery=list(dimensions='AD_EXCHANGE_TAG_NAME',
                                                      dimensions='DATE',
                                                      adUnitView='TOP LEVEL',
-                                                     columns='AD_EXCHANGE_REQUESTS',
-                                                     columns="AD_EXCHANGE_MATCHED_QUERIES",
+                                                     columns='AD_EXCHANGE_AD_REQUESTS',
+                                                     columns="AD_EXCHANGE_MATCHED_REQUESTS",
                                                      columns="AD_EXCHANGE_COVERAGE",
                                                      columns="AD_EXCHANGE_CLICKS",
-                                                     columns="AD_EXCHANGE_MATCHED_QUERIES_CTR",
-                                                     columns="AD_EXCHANGE_CPC_REVENUE",
-                                                     columns="AD_EXCHANGE_REQUEST_ECPM",
+                                                     columns="AD_EXCHANGE_AD_CTR",
+                                                     columns="AD_EXCHANGE_CPC",
+                                                     columns="AD_EXCHANGE_AD_ECPM",
                                                      columns="AD_EXCHANGE_ESTIMATED_REVENUE",
-                                                     startDate=list(year=2018, month=yesterday_month, day=yesterday_day),
-                                                     endDate=list(year=2018, month=yesterday_month, day=yesterday_day),
+                                                     startDate=list(year=yesterday_year_req, month=yesterday_month, day=yesterday_day),
+                                                     endDate=list(year=yesterday_year_req, month=yesterday_month, day=yesterday_day),
                                                      dateRangeType='CUSTOM_DATE')))
+
 
 report_data_yesterday <- dfp_full_report_wrapper(request_data)
 report_data_yesterday[10]= report_data_yesterday[10]/10^6
 
-#last_week
+####last week##########
 lastweek_day = format(as.Date(today-8,format="%Y-%m-%d"), "%d")
 lastweek_month = format(as.Date(today-8,format="%Y-%m-%d"), "%m")
+lastweek_year_req = as.numeric(paste("20",format(as.Date(today-8,format="%YYYY-%m-%d"), "%y"),sep=''))
 
 sett_scorsa= paste("2017",lastweek_month,lastweek_day,sep="")
 lastweek_check = today-8
@@ -161,16 +184,16 @@ ieri_check=today-1
 request_data <- list(reportJob=list(reportQuery=list(dimensions='AD_EXCHANGE_TAG_NAME',
                                                      dimensions='DATE',
                                                      adUnitView='TOP LEVEL',
-                                                     columns='AD_EXCHANGE_REQUESTS',
-                                                     columns="AD_EXCHANGE_MATCHED_QUERIES",
+                                                     columns='AD_EXCHANGE_AD_REQUESTS',
+                                                     columns="AD_EXCHANGE_MATCHED_REQUESTS",
                                                      columns="AD_EXCHANGE_COVERAGE",
                                                      columns="AD_EXCHANGE_CLICKS",
-                                                     columns="AD_EXCHANGE_MATCHED_QUERIES_CTR",
-                                                     columns="AD_EXCHANGE_CPC_REVENUE",
-                                                     columns="AD_EXCHANGE_REQUEST_ECPM",
+                                                     columns="AD_EXCHANGE_AD_CTR",
+                                                     columns="AD_EXCHANGE_CPC",
+                                                     columns="AD_EXCHANGE_AD_ECPM",
                                                      columns="AD_EXCHANGE_ESTIMATED_REVENUE",
-                                                     startDate=list(year=2018, month=lastweek_month, day=lastweek_day),
-                                                     endDate=list(year=2018, month=lastweek_month, day=lastweek_day),
+                                                     startDate=list(year=lastweek_year_req, month=lastweek_month, day=lastweek_day),
+                                                     endDate=list(year=lastweek_year_req, month=lastweek_month, day=lastweek_day),
                                                      dateRangeType='CUSTOM_DATE')))
 
 report_data_lastweek <- dfp_full_report_wrapper(request_data)
@@ -179,22 +202,24 @@ report_data_lastweek[10]= report_data_lastweek[10]/10^6
 #last_2_weeks
 last_2_weeks_day = format(as.Date(today-15,format="%Y-%m-%d"), "%d")
 last_2_weeks_month = format(as.Date(today-15,format="%Y-%m-%d"), "%m")
+last_2_weeks_year_req = as.numeric(paste("20",format(as.Date(today-15,format="%YYYY-%m-%d"), "%y"),sep=''))
+
 last2week_check = today-15
 
 request_data_last_2_weeks <- list(reportJob=list(reportQuery=list(dimensions='AD_EXCHANGE_TAG_NAME',
                                                                   dimensions='DATE',
                                                      adUnitView='TOP LEVEL',
                                                      
-                                                     columns='AD_EXCHANGE_REQUESTS',
-                                                     columns="AD_EXCHANGE_MATCHED_QUERIES",
+                                                     columns='AD_EXCHANGE_AD_REQUESTS',
+                                                     columns="AD_EXCHANGE_MATCHED_REQUESTS",
                                                      columns="AD_EXCHANGE_COVERAGE",
                                                      columns="AD_EXCHANGE_CLICKS",
-                                                     columns="AD_EXCHANGE_MATCHED_QUERIES_CTR",
-                                                     columns="AD_EXCHANGE_CPC_REVENUE",
-                                                     columns="AD_EXCHANGE_REQUEST_ECPM",
+                                                     columns="AD_EXCHANGE_AD_CTR",
+                                                     columns="AD_EXCHANGE_CPC",
+                                                     columns="AD_EXCHANGE_AD_ECPM",
                                                      columns="AD_EXCHANGE_ESTIMATED_REVENUE",
-                                                     startDate=list(year=2017, month=last_2_weeks_month, day=last_2_weeks_day),
-                                                     endDate=list(year=2018, month=last_2_weeks_month, day=last_2_weeks_day),
+                                                     startDate=list(year=last_2_weeks_year_req, month=last_2_weeks_month, day=last_2_weeks_day),
+                                                     endDate=list(year=last_2_weeks_year_req, month=last_2_weeks_month, day=last_2_weeks_day),
                                                      dateRangeType='CUSTOM_DATE')))
 
 report_data_last_2_weeks <- dfp_full_report_wrapper(request_data_last_2_weeks)
